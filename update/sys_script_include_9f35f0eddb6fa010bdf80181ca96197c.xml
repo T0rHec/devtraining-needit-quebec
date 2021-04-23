@@ -9,20 +9,35 @@
         <name>GenerarUserID</name>
         <script><![CDATA[function GenerarUserID() {
     var userName = (current.first_name.toLowerCase()).slice(0, 1) + current.last_name.toLowerCase();
-    current.user_name = userName;
+    //Consultar si existen registros con el mismo UserID, y si existen contar cuantos son.
+    var count = new GlideAggregate('sys_user');
+    count.addAggregate('COUNT');
+    count.addQuery('user_name', '=', userName);
+    count.query();
+    var recs = 0;
+    if (count.next()) {
+        recs = count.getAggregate('COUNT');
+    }
+    //Si la consulta devuelve 0 asignar el UserID
+	//De lo contrario asignar el UserID más el número de registros encontrados
+    if (recs == 0) {
+        current.user_name = userName;
+    }else{
+		current.user_name = userName + recs;
+	}
     return;
 }]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-04-15 22:54:11</sys_created_on>
         <sys_id>9f35f0eddb6fa010bdf80181ca96197c</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_name>GenerarUserID</sys_name>
         <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
         <sys_update_name>sys_script_include_9f35f0eddb6fa010bdf80181ca96197c</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-04-15 22:54:11</sys_updated_on>
+        <sys_updated_on>2021-04-23 03:44:31</sys_updated_on>
     </sys_script_include>
 </record_update>
